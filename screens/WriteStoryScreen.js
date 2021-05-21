@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Alert, ToastAndroid, KeyboardAvoidingView} from 'react-native';
 import {Header} from 'react-native-elements';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import * as firebase from 'firebase';
@@ -15,52 +15,59 @@ constructor(props){
   };
 }
 sumbitStory=()=>{
+  var transactioMessage;
   db.collection('Write_Story_Details').add({
           'Story_Title': this.state.title,
            'Author_Name': this.state.author,
            'Written_Story': this.state.story,
         });
-      Alert.alert("Story Submited");
-      console.log('sumbit');
-  this.setState({
-    title:'',
-    author:'',
-    story:'',
-  })
+    ToastAndroid.show("Story Submited", ToastAndroid.SHORT)
+ 
 }
  render(){
         return(
             <SafeAreaProvider>
                 <Header backgroundColor="#9854cb" 
                 centerComponent={{text:'Story Hub', style:{color: 'white', fontSize:20}}}/>
-            <View style={styles.container}>
+            <KeyboardAvoidingView style={styles.container} behavior='padding' enabled>
               <TextInput 
               style={styles.inputTitleBox}
               placeholder="Story Title"
-              onChangeText = {(text)=>{
-                  this.setState({
-                    title:text
-              })}}/>
+              onChangeText={
+                text=>this.setState({
+                  title: text
+                })}
+                value={this.state.title}/>
               <TextInput 
               style={styles.inputAuthorNameBox}
               placeholder="Author"
-              onChangeText = {(text)=>{
-                  this.setState({
-                    author:text
-              })}}/>
+              onChangeText={
+                text=>this.setState({
+                  author: text
+                })
+              }
+              value={this.state.author}/>
               <TextInput 
               style={styles.inputStoryBox}
               placeholder="Write your story here."
-              onChangeText = {(text)=>{
-                  this.setState({
-                    story:text
-              })}}/>
+              onChangeText={
+                text=>this.setState({
+                  story: text
+                })}
+                value={this.state.story}/>
               <TouchableOpacity 
               style={styles.sumbitButton}
-              onPress={this.sumbitStory}>
+             onPress={()=>{
+              this.sumbitStory();
+               this.setState({
+                 title: '',
+                 author: '',
+                 story: '',
+               })
+              }}>
                 <Text style={styles.buttonText}>Sumbit</Text>
               </TouchableOpacity>
-            </View>
+            </KeyboardAvoidingView>
             </SafeAreaProvider>
             
         );
